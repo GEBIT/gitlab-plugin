@@ -133,7 +133,7 @@ public class MergeRequestHookTriggerHandlerImplTest {
         MergeRequestHookTriggerHandler mergeRequestHookTriggerHandler = withConfig()
             .setTriggerOnClosedMergeRequest(true)
             .build();
-        OneShotEvent buildTriggered = doHandle(mergeRequestHookTriggerHandler, State.closed, Action.closed);
+        OneShotEvent buildTriggered = doHandle(mergeRequestHookTriggerHandler, State.closed, Action.close);
 
         assertThat(buildTriggered.isSignaled(), is(true));
     }
@@ -144,7 +144,7 @@ public class MergeRequestHookTriggerHandlerImplTest {
             .setTriggerOnClosedMergeRequest(true)
             .setTriggerOnApprovedMergeRequest(true)
             .build();
-        OneShotEvent buildTriggered = doHandle(mergeRequestHookTriggerHandler, State.closed, Action.closed);
+        OneShotEvent buildTriggered = doHandle(mergeRequestHookTriggerHandler, State.closed, Action.close);
 
         assertThat(buildTriggered.isSignaled(), is(true));
     }
