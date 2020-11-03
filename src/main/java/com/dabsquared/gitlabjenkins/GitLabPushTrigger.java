@@ -169,6 +169,9 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
     @Initializer(after = InitMilestone.JOB_LOADED)
     public static void migrateJobs() throws IOException {
         GitLabPushTrigger.DescriptorImpl oldConfig = Trigger.all().get(GitLabPushTrigger.DescriptorImpl.class);
+        if (oldConfig == null) {
+        	return;
+        }
         if (!oldConfig.jobsMigrated) {
             GitLabConnectionConfig gitLabConfig = (GitLabConnectionConfig) Jenkins.getInstance().getDescriptor(GitLabConnectionConfig.class);
             gitLabConfig.getConnections().add(new GitLabConnection(
