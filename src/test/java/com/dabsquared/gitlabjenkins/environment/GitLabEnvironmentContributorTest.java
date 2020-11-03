@@ -66,6 +66,7 @@ public class GitLabEnvironmentContributorTest {
 
     @Test
     public void matrixProjectTest() throws IOException, InterruptedException, ExecutionException {
+    	System.out.println("PLUGINS: " + jenkins.getPluginManager().getPlugins());
         EnvVars env;
         MatrixProject p = jenkins.jenkins.createProject(MatrixProject.class, "matrixbuild");
         GitLabWebHookCause cause = new GitLabWebHookCause(generateCauseData());

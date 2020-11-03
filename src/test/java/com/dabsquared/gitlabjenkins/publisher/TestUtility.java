@@ -72,7 +72,7 @@ final class TestUtility {
         MatrixBuild parentBuild = mock(MatrixBuild.class);
 
         when(build.getParent()).thenReturn(project);
-        when(((MatrixAggregatable) publisher).createAggregator(any(MatrixBuild.class), any(Launcher.class), any(BuildListener.class))).thenCallRealMethod();
+        when(((MatrixAggregatable) publisher).createAggregator(parentBuild, null, listener)).thenCallRealMethod();
         when(publisher.perform(any(AbstractBuild.class), any(Launcher.class), any(BuildListener.class))).thenReturn(true);
 
         MatrixAggregator aggregator = ((MatrixAggregatable) publisher).createAggregator(parentBuild, null, listener);
