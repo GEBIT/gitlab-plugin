@@ -44,6 +44,7 @@ public final class CauseData {
     private final Action mergeRequestAction;
     private final String mergeRequestOldRev;
     private final boolean mergeRequestWIP;
+    private final boolean mergeRequestBecameNonWIP;
     private final String mergedByUser;
     private final String mergeRequestAssignee;
     private final Integer mergeRequestTargetProjectId;
@@ -75,7 +76,7 @@ public final class CauseData {
               Integer mergeRequestIid, Integer mergeRequestTargetProjectId, String targetBranch, String targetRepoName, String targetNamespace, String targetRepoSshUrl,
               String targetRepoHttpUrl, String triggeredByUser, String before, String after, String lastCommit, String targetProjectUrl,
               String triggerPhrase, String mergeRequestState, Action mergeRequestAction, String mergeRequestOldRev, boolean mergeRequestWIP,
-              String mergedByUser, String mergeRequestAssignee, String ref, String isTag,
+              boolean mergeRequestBecameNonWIP, String mergedByUser, String mergeRequestAssignee, String ref, String isTag,
 	            String sha, String beforeSha, String status, String stages, String createdAt, String finishedAt, String buildDuration) {
         this.actionType = checkNotNull(actionType, "actionType must not be null.");
         this.sourceProjectId = checkNotNull(sourceProjectId, "sourceProjectId must not be null.");
@@ -99,6 +100,7 @@ public final class CauseData {
         this.mergeRequestAction = mergeRequestAction;
         this.mergeRequestOldRev = mergeRequestOldRev;
         this.mergeRequestWIP = mergeRequestWIP;
+        this.mergeRequestBecameNonWIP = mergeRequestBecameNonWIP;
         this.mergedByUser = mergedByUser == null ? "" : mergedByUser;
         this.mergeRequestAssignee = mergeRequestAssignee == null ? "" : mergeRequestAssignee;
         this.mergeRequestTargetProjectId = mergeRequestTargetProjectId;
@@ -149,6 +151,7 @@ public final class CauseData {
         variables.putIfNotNull("gitlabMergeRequestAction", mergeRequestAction == null ? null : mergeRequestAction.name());
         variables.putIfNotNull("gitlabMergeRequestOldRev", mergeRequestOldRev);
         variables.put("gitlabMergeRequestWIP", mergeRequestWIP ? "true" : "false");
+        variables.put("gitlabMergeRequestBecameNonWIP", mergeRequestBecameNonWIP ? "true" : "false");
         variables.putIfNotNull("gitlabMergedByUser", mergedByUser);
         variables.putIfNotNull("gitlabMergeRequestAssignee", mergeRequestAssignee);
         variables.put("gitlabTargetBranch", targetBranch);
@@ -362,12 +365,17 @@ public final class CauseData {
     public String getMergeRequestOldRev() {
     	return mergeRequestOldRev;
     }
-    
+
     @Exported
     public boolean getMergeRequestWIP() {
     	return mergeRequestWIP;
     }
-    
+
+    @Exported
+    public boolean getMergeRequestBecameNonWIP() {
+    	return mergeRequestBecameNonWIP;
+    }
+
     @Exported
 	public String getMergedByUser() {
 		return mergedByUser;
@@ -420,6 +428,7 @@ public final class CauseData {
             .append(mergeRequestAction, causeData.mergeRequestAction)
             .append(mergeRequestOldRev, causeData.mergeRequestOldRev)
             .append(mergeRequestWIP, causeData.mergeRequestWIP)
+            .append(mergeRequestBecameNonWIP, causeData.mergeRequestBecameNonWIP)
             .append(mergedByUser, causeData.mergedByUser)
             .append(mergeRequestAssignee, causeData.mergeRequestAssignee)
             .append(mergeRequestTargetProjectId, causeData.mergeRequestTargetProjectId)
@@ -470,6 +479,7 @@ public final class CauseData {
             .append(mergeRequestAction)
             .append(mergeRequestOldRev)
             .append(mergeRequestWIP)
+            .append(mergeRequestBecameNonWIP)
             .append(mergedByUser)
             .append(mergeRequestAssignee)
             .append(mergeRequestTargetProjectId)
@@ -520,6 +530,7 @@ public final class CauseData {
             .append("mergeRequestAction", mergeRequestAction)
             .append("mergeRequestOldRev", mergeRequestOldRev)
             .append("mergeRequestWIP", mergeRequestWIP)
+            .append("mergeRequestBecameNonWIP", mergeRequestBecameNonWIP)
             .append("mergedByUser", mergedByUser)
             .append("mergeRequestAssignee", mergeRequestAssignee)
             .append("mergeRequestTargetProjectId", mergeRequestTargetProjectId)
