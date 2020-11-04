@@ -42,6 +42,7 @@ public final class CauseData {
     private final Integer mergeRequestIid;
     private final String mergeRequestState;
     private final Action mergeRequestAction;
+    private final String mergeRequestOldRev;
     private final String mergedByUser;
     private final String mergeRequestAssignee;
     private final Integer mergeRequestTargetProjectId;
@@ -72,7 +73,7 @@ public final class CauseData {
               String sourceRepoSshUrl, String sourceRepoHttpUrl, String mergeRequestTitle, String mergeRequestDescription, Integer mergeRequestId,
               Integer mergeRequestIid, Integer mergeRequestTargetProjectId, String targetBranch, String targetRepoName, String targetNamespace, String targetRepoSshUrl,
               String targetRepoHttpUrl, String triggeredByUser, String before, String after, String lastCommit, String targetProjectUrl,
-              String triggerPhrase, String mergeRequestState, Action mergeRequestAction, String mergedByUser, String mergeRequestAssignee, String ref, String isTag,
+              String triggerPhrase, String mergeRequestState, Action mergeRequestAction, String mergeRequestOldRev, String mergedByUser, String mergeRequestAssignee, String ref, String isTag,
 	            String sha, String beforeSha, String status, String stages, String createdAt, String finishedAt, String buildDuration) {
         this.actionType = checkNotNull(actionType, "actionType must not be null.");
         this.sourceProjectId = checkNotNull(sourceProjectId, "sourceProjectId must not be null.");
@@ -94,6 +95,7 @@ public final class CauseData {
         this.mergeRequestIid = mergeRequestIid;
         this.mergeRequestState = mergeRequestState == null ? "" : mergeRequestState;
         this.mergeRequestAction = mergeRequestAction;
+        this.mergeRequestOldRev = mergeRequestOldRev;
         this.mergedByUser = mergedByUser == null ? "" : mergedByUser;
         this.mergeRequestAssignee = mergeRequestAssignee == null ? "" : mergeRequestAssignee;
         this.mergeRequestTargetProjectId = mergeRequestTargetProjectId;
@@ -142,6 +144,7 @@ public final class CauseData {
         variables.put("gitlabMergeRequestLastCommit", lastCommit);
         variables.putIfNotNull("gitlabMergeRequestState", mergeRequestState);
         variables.putIfNotNull("gitlabMergeRequestAction", mergeRequestAction == null ? null : mergeRequestAction.name());
+        variables.putIfNotNull("gitlabMergeRequestOldRev", mergeRequestOldRev);
         variables.putIfNotNull("gitlabMergedByUser", mergedByUser);
         variables.putIfNotNull("gitlabMergeRequestAssignee", mergeRequestAssignee);
         variables.put("gitlabTargetBranch", targetBranch);
@@ -350,6 +353,11 @@ public final class CauseData {
     public Action getMergeRequestAction() {
     	return mergeRequestAction;
     }
+
+    @Exported
+    public String getMergeRequestOldRev() {
+    	return mergeRequestOldRev;
+    }
     
     @Exported
 	public String getMergedByUser() {
@@ -401,6 +409,7 @@ public final class CauseData {
             .append(mergeRequestIid, causeData.mergeRequestIid)
             .append(mergeRequestState, causeData.mergeRequestState)
             .append(mergeRequestAction, causeData.mergeRequestAction)
+            .append(mergeRequestOldRev, causeData.mergeRequestOldRev)
             .append(mergedByUser, causeData.mergedByUser)
             .append(mergeRequestAssignee, causeData.mergeRequestAssignee)
             .append(mergeRequestTargetProjectId, causeData.mergeRequestTargetProjectId)
@@ -449,6 +458,7 @@ public final class CauseData {
             .append(mergeRequestIid)
             .append(mergeRequestState)
             .append(mergeRequestAction)
+            .append(mergeRequestOldRev)
             .append(mergedByUser)
             .append(mergeRequestAssignee)
             .append(mergeRequestTargetProjectId)
@@ -497,6 +507,7 @@ public final class CauseData {
             .append("mergeRequestIid", mergeRequestIid)
             .append("mergeRequestState", mergeRequestState)
             .append("mergeRequestAction", mergeRequestAction)
+            .append("mergeRequestOldRev", mergeRequestOldRev)
             .append("mergedByUser", mergedByUser)
             .append("mergeRequestAssignee", mergeRequestAssignee)
             .append("mergeRequestTargetProjectId", mergeRequestTargetProjectId)

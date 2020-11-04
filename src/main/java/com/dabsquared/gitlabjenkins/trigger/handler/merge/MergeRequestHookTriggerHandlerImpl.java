@@ -194,6 +194,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
                 .withMergeRequestIid(hook.getObjectAttributes().getIid())
                 .withMergeRequestState(hook.getObjectAttributes().getState().toString())
                 .withMergeRequestAction(hook.getObjectAttributes().getAction())
+                .withMergeRequestOldRev(hook.getObjectAttributes().getOldrev())
                 .withMergedByUser(hook.getUser() == null ? null : hook.getUser().getUsername())
                 .withMergeRequestAssignee(hook.getAssignee() == null ? null : hook.getAssignee().getUsername())
                 .withMergeRequestTargetProjectId(hook.getObjectAttributes().getTargetProjectId())
