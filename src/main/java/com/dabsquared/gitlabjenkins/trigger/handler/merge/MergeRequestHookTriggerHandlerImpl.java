@@ -43,6 +43,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     private static final Logger LOGGER = Logger.getLogger(MergeRequestHookTriggerHandlerImpl.class.getName());
 
     private final boolean onlyIfNewCommitsPushed;
+    private final boolean rebuildSameCommitAllowed;
     private final boolean skipWorkInProgressMergeRequest;
     private final Set<String> labelsThatForcesBuildIfAdded;
     private final Predicate<MergeRequestObjectAttributes> triggerConfig;
@@ -51,19 +52,20 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     private final boolean cancelPendingBuildsOnUpdate;
 
     MergeRequestHookTriggerHandlerImpl(Collection<State> allowedStates, boolean skipWorkInProgressMergeRequest, boolean cancelPendingBuildsOnUpdate) {
-        this(allowedStates, EnumSet.noneOf(Action.class), false, skipWorkInProgressMergeRequest, cancelPendingBuildsOnUpdate);
+        this(allowedStates, EnumSet.noneOf(Action.class), false, false, skipWorkInProgressMergeRequest, cancelPendingBuildsOnUpdate);
     }
 
     // this retains internal API, however, the plugin code no longer instantiates the handler this way.
     // any code using it should test it on higher level
     @Deprecated
-    MergeRequestHookTriggerHandlerImpl(Collection<State> allowedStates, Collection<Action> allowedActions, boolean onlyIfNewCommitsPushed, boolean skipWorkInProgressMergeRequest, boolean cancelPendingBuildsOnUpdate) {
-        this(new TriggerConfigChain().add(allowedStates, null).add(null, allowedActions), onlyIfNewCommitsPushed, skipWorkInProgressMergeRequest, emptySet(), cancelPendingBuildsOnUpdate);
+    MergeRequestHookTriggerHandlerImpl(Collection<State> allowedStates, Collection<Action> allowedActions, boolean onlyIfNewCommitsPushed, boolean rebuildSameCommitAllowed, boolean skipWorkInProgressMergeRequest, boolean cancelPendingBuildsOnUpdate) {
+        this(new TriggerConfigChain().add(allowedStates, null).add(null, allowedActions), onlyIfNewCommitsPushed, rebuildSameCommitAllowed, skipWorkInProgressMergeRequest, emptySet(), cancelPendingBuildsOnUpdate);
     }
 
-    MergeRequestHookTriggerHandlerImpl(Predicate<MergeRequestObjectAttributes> triggerConfig, boolean onlyIfNewCommitsPushed, boolean skipWorkInProgressMergeRequest, Set<String> labelsThatForcesBuildIfAdded, boolean cancelPendingBuildsOnUpdate) {
+    MergeRequestHookTriggerHandlerImpl(Predicate<MergeRequestObjectAttributes> triggerConfig, boolean onlyIfNewCommitsPushed, boolean rebuildSameCommitAllowed, boolean skipWorkInProgressMergeRequest, Set<String> labelsThatForcesBuildIfAdded, boolean cancelPendingBuildsOnUpdate) {
         this.triggerConfig = triggerConfig;
         this.onlyIfNewCommitsPushed = onlyIfNewCommitsPushed;
+        this.rebuildSameCommitAllowed = rebuildSameCommitAllowed;
         this.skipWorkInProgressMergeRequest = skipWorkInProgressMergeRequest;
         this.labelsThatForcesBuildIfAdded = labelsThatForcesBuildIfAdded;
         this.cancelPendingBuildsOnUpdate = cancelPendingBuildsOnUpdate;
@@ -117,7 +119,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     			LOGGER.log(Level.INFO, "Accept MR #{0} event forced by added label", objectAttributes.getIid());
                 return true;
             } else {
-                if (isLastCommitNotYetBuild(job, hook)) {
+                if (rebuildSameCommitAllowed || isLastCommitNotYetBuild(job, hook)) {
                     boolean apply = isNewCommitPushed(hook) || isBecameNoWip(hook);
                     if (!apply) {
                     	LOGGER.log(Level.INFO, "Ignore MR #{0} update event because neither event is triggered by a "

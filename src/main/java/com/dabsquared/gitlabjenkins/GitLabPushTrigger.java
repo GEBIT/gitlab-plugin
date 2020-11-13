@@ -82,6 +82,7 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
     private boolean triggerToBranchDeleteRequest = false;
     private boolean triggerOnMergeRequest = true;
     private boolean triggerOnlyIfNewCommitsPushed = false;
+    private boolean rebuildSameCommitAllowed = false;
     private boolean triggerOnPipelineEvent = false;
     private boolean triggerOnAcceptedMergeRequest = false;
     private boolean triggerOnClosedMergeRequest = false;
@@ -121,7 +122,8 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
      */
     @Deprecated
     @GeneratePojoBuilder(intoPackage = "*.builder.generated", withFactoryMethod = "*")
-    public GitLabPushTrigger(boolean triggerOnPush, boolean triggerToBranchDeleteRequest, boolean triggerOnMergeRequest, boolean triggerOnlyIfNewCommitsPushed, boolean triggerOnAcceptedMergeRequest, boolean triggerOnClosedMergeRequest,
+    public GitLabPushTrigger(boolean triggerOnPush, boolean triggerToBranchDeleteRequest, boolean triggerOnMergeRequest,
+                             boolean triggerOnlyIfNewCommitsPushed, boolean rebuildSameCommitAllowed, boolean triggerOnAcceptedMergeRequest, boolean triggerOnClosedMergeRequest,
     						 TriggerOpenMergeRequest triggerOpenMergeRequestOnPush, boolean triggerOnNoteRequest, String noteRegex,
                              boolean skipWorkInProgressMergeRequest, boolean ciSkip, String labelsThatForcesBuildIfAdded,
                              boolean setBuildDescription, boolean addNoteOnMergeRequest, boolean addCiMessage, boolean addVoteOnMergeRequest,
@@ -133,6 +135,7 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
         this.triggerToBranchDeleteRequest = triggerToBranchDeleteRequest;
         this.triggerOnMergeRequest = triggerOnMergeRequest;
         this.triggerOnlyIfNewCommitsPushed = triggerOnlyIfNewCommitsPushed;
+        this.rebuildSameCommitAllowed = rebuildSameCommitAllowed;
         this.triggerOnAcceptedMergeRequest = triggerOnAcceptedMergeRequest;
         this.triggerOnClosedMergeRequest = triggerOnClosedMergeRequest;
         this.triggerOnNoteRequest = triggerOnNoteRequest;
@@ -235,6 +238,11 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
     @Override
     public boolean isTriggerOnlyIfNewCommitsPushed() {
         return triggerOnlyIfNewCommitsPushed;
+    }
+    
+    @Override
+    public boolean isRebuildSameCommitAllowed() {
+    	return rebuildSameCommitAllowed;
     }
 
     @Override
@@ -345,6 +353,11 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
     @DataBoundSetter
     public void setTriggerOnlyIfNewCommitsPushed(boolean triggerOnlyIfNewCommitsPushed) {
         this.triggerOnlyIfNewCommitsPushed = triggerOnlyIfNewCommitsPushed;
+    }
+    
+    @DataBoundSetter
+    public void setRebuildSameCommitAllowed(boolean rebuildSameCommitAllowed) {
+    	this.rebuildSameCommitAllowed = rebuildSameCommitAllowed;
     }
 
     @DataBoundSetter
