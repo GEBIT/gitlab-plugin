@@ -12,7 +12,9 @@ import com.dabsquared.gitlabjenkins.trigger.filter.MergeRequestLabelFilter;
 import com.dabsquared.gitlabjenkins.util.LoggerUtil;
 import hudson.model.Action;
 import hudson.model.CauseAction;
+import hudson.model.InvisibleAction;
 import hudson.model.Job;
+import hudson.model.Queue.QueueAction;
 import hudson.plugins.git.GitSCM;
 import hudson.plugins.git.RevisionParameterAction;
 import hudson.scm.SCM;
@@ -25,8 +27,10 @@ import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,6 +96,7 @@ public abstract class AbstractWebHookTriggerHandler<H extends WebHook> implement
             LOGGER.log(Level.WARNING, "unknown handled situation, dont know what revision to build for req {0} for job {1}",
                     new Object[]{hook, (job != null ? job.getFullName() : null)});
         }
+        actions.add(new AlwaysAddToQueueAction());
         return actions.toArray(new Action[actions.size()]);
     }
 
@@ -173,5 +178,14 @@ public abstract class AbstractWebHookTriggerHandler<H extends WebHook> implement
         public String getRef() {
             return ref;
         }
+    }
+    
+    public static class AlwaysAddToQueueAction extends InvisibleAction implements QueueAction, Serializable {
+
+		@Override
+		public boolean shouldSchedule(List<Action> actions) {
+			return true;
+		}
+    	
     }
 }
