@@ -1,7 +1,15 @@
 package com.dabsquared.gitlabjenkins.util;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause;
+import com.dabsquared.gitlabjenkins.workflow.GitLabBranchBuild;
+
+import hudson.model.Cause;
 import hudson.model.Job;
 import hudson.model.Run;
+import hudson.model.Cause.UpstreamCause;
 import hudson.plugins.git.Branch;
 import hudson.plugins.git.util.BuildData;
 import hudson.plugins.git.util.MergeRecord;
@@ -57,5 +65,27 @@ public class BuildUtil {
 
     private static boolean hasLastBuild(BuildData data) {
         return data != null && data.lastBuild != null && data.lastBuild.getRevision() != null;
+    }
+
+    public static GitLabWebHookCause findGitLabWebHookCause(Run<?, ?> build) {
+    	return findGitLabWebHookCauseFromUpstreamCauses(build.getCauses());
+    }
+
+    private static GitLabWebHookCause findGitLabWebHookCauseFromUpstreamCauses(List<Cause> causes) {
+        for (Cause cause : causes) {
+            if (cause instanceof UpstreamCause) {
+                List<Cause> upCauses = ((UpstreamCause) cause).getUpstreamCauses();    // Non null, returns empty list when none are set
+                for (Cause upCause : upCauses) {
+                    if (upCause instanceof GitLabWebHookCause) {
+                        return (GitLabWebHookCause) upCause;
+                    }
+                }
+                GitLabWebHookCause gitLabCause = findGitLabWebHookCauseFromUpstreamCauses(upCauses);
+                if (gitLabCause != null) {
+                    return gitLabCause;
+                }
+            }
+        }
+        return null;
     }
 }

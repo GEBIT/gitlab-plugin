@@ -22,6 +22,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 import com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause;
 import com.dabsquared.gitlabjenkins.gitlab.api.GitLabClient;
 import com.dabsquared.gitlabjenkins.gitlab.api.model.MergeRequest;
+import com.dabsquared.gitlabjenkins.util.BuildUtil;
 import com.google.common.collect.ImmutableSet;
 
 import hudson.Extension;
@@ -72,7 +73,7 @@ public class AddGitLabMergeRequestCommentStep extends Step {
         
         @Override
         protected Void run() throws Exception {
-            GitLabWebHookCause cause = run.getCause(GitLabWebHookCause.class);
+            GitLabWebHookCause cause = BuildUtil.findGitLabWebHookCause(run);
             if (cause != null) {
                 MergeRequest mergeRequest = cause.getData().getMergeRequest();
                 if (mergeRequest != null) {
