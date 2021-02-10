@@ -17,6 +17,7 @@ public class Project {
     private String webUrl;
     private String sshUrlToRepo;
     private String httpUrlToRepo;
+    private String pathWithNamespace;
 
     public Integer getId() {
         return id;
@@ -66,6 +67,14 @@ public class Project {
         this.httpUrlToRepo = httpUrlToRepo;
     }
 
+    public String getPathWithNamespace() {
+        return pathWithNamespace;
+    }
+
+    public void setPathWithNamespace(String pathWithNamespace) {
+        this.pathWithNamespace = pathWithNamespace;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -81,6 +90,7 @@ public class Project {
             .append(webUrl, project.webUrl)
             .append(sshUrlToRepo, project.sshUrlToRepo)
             .append(httpUrlToRepo, project.httpUrlToRepo)
+            .append(pathWithNamespace, project.pathWithNamespace)
             .isEquals();
     }
 
@@ -92,6 +102,7 @@ public class Project {
             .append(webUrl)
             .append(sshUrlToRepo)
             .append(httpUrlToRepo)
+            .append(pathWithNamespace)
             .toHashCode();
     }
 
@@ -103,6 +114,7 @@ public class Project {
             .append("webUrl", webUrl)
             .append("sshUrlToRepo", sshUrlToRepo)
             .append("httpUrlToRepo", httpUrlToRepo)
+            .append("pathWithNamespace", pathWithNamespace)
             .toString();
     }
 }
