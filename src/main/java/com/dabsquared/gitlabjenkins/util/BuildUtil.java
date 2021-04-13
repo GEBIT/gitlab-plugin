@@ -73,7 +73,9 @@ public class BuildUtil {
 
     private static GitLabWebHookCause findGitLabWebHookCauseFromUpstreamCauses(List<Cause> causes) {
         for (Cause cause : causes) {
-            if (cause instanceof UpstreamCause) {
+        	if (cause instanceof GitLabWebHookCause) {
+                return (GitLabWebHookCause) cause;
+            } else if (cause instanceof UpstreamCause) {
                 List<Cause> upCauses = ((UpstreamCause) cause).getUpstreamCauses();    // Non null, returns empty list when none are set
                 for (Cause upCause : upCauses) {
                     if (upCause instanceof GitLabWebHookCause) {
