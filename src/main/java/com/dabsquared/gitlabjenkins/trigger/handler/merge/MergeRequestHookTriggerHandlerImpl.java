@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.EnumSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import static com.dabsquared.gitlabjenkins.cause.CauseDataBuilder.causeData;
 import static com.dabsquared.gitlabjenkins.trigger.handler.builder.generated.BuildStatusUpdateBuilder.buildStatusUpdate;
@@ -41,6 +42,9 @@ import static com.dabsquared.gitlabjenkins.util.LoggerUtil.toArray;
 class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<MergeRequestHook> implements MergeRequestHookTriggerHandler {
 
     private static final Logger LOGGER = Logger.getLogger(MergeRequestHookTriggerHandlerImpl.class.getName());
+    
+    private static final Pattern WIP_PATTERN = Pattern.compile("\\A((?i)(\\[WIP\\]\\s*|WIP:\\s*|WIP\\s+|WIP$)"
+    		+ "|(?i)(\\[draft\\]|\\(draft\\)|draft:|draft\\s\\-\\s|draft\\s|draft$))+\\s*");
 
     private final boolean onlyIfNewCommitsPushed;
     private final boolean rebuildSameCommitAllowed;
@@ -284,12 +288,17 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
 		}
 		return applied;
     }
+	
     private boolean isBecameNoWip(MergeRequestHook hook) {
         MergeRequestChangedTitle changedTitle = Optional.of(hook).map(MergeRequestHook::getChanges).map(MergeRequestChanges::getTitle).orElse(new MergeRequestChangedTitle());
         String current = changedTitle.getCurrent() != null ? changedTitle.getCurrent() : "";
         String previous = changedTitle.getPrevious() != null ? changedTitle.getPrevious() : "";
 
-        return previous.contains("WIP") && !current.contains("WIP");
+        return isWipTitle(previous) && !isWipTitle(current);
+    }
+    
+    private boolean isWipTitle(String titel) {
+    	return WIP_PATTERN.matcher(titel).matches();
     }
 
     private boolean isForcedByAddedLabel(MergeRequestHook hook) {
