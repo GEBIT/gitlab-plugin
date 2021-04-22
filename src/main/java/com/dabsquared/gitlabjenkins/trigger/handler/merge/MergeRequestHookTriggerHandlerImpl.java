@@ -44,7 +44,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     private static final Logger LOGGER = Logger.getLogger(MergeRequestHookTriggerHandlerImpl.class.getName());
     
     private static final Pattern WIP_PATTERN = Pattern.compile("\\A((?i)(\\[WIP\\]\\s*|WIP:\\s*|WIP\\s+|WIP$)"
-    		+ "|(?i)(\\[draft\\]|\\(draft\\)|draft:|draft\\s\\-\\s|draft\\s|draft$))+\\s*");
+    		+ "|(?i)(\\[draft\\]|\\(draft\\)|draft:|draft\\s\\-\\s|draft\\s|draft$))");
 
     private final boolean onlyIfNewCommitsPushed;
     private final boolean rebuildSameCommitAllowed;
@@ -297,8 +297,8 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
         return isWipTitle(previous) && !isWipTitle(current);
     }
     
-    private boolean isWipTitle(String titel) {
-    	return WIP_PATTERN.matcher(titel).matches();
+    protected static boolean isWipTitle(String titel) {
+    	return WIP_PATTERN.matcher(titel).find();
     }
 
     private boolean isForcedByAddedLabel(MergeRequestHook hook) {
