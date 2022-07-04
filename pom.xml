@@ -8,7 +8,7 @@
     <relativePath />
   </parent>
   <artifactId>gitlab-plugin</artifactId>
-  <version>1.5.35</version>
+  <version>1.5.35-gebit1</version>
   <name>GitLab Plugin</name>
   <url>https://github.com/jenkinsci/${project.artifactId}</url>
   <packaging>hpi</packaging>
