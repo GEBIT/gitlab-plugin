@@ -23,6 +23,13 @@
     <hpi.compatibleSinceVersion>1.4.0</hpi.compatibleSinceVersion>
     <mockserver.version>5.14.0</mockserver.version>
     
+    <!-- Version of the project (same as in version tag). It will be updated automatically by GEBIT flow. -->
+    <version.gitlab-plugin>1.6.0</version.gitlab-plugin>
+    <version.property>version.gitlab-plugin</version.property>
+    
+    <project.build-name>gitlab-plugin</project.build-name>
+	<project.jira>DINF</project.jira>
+    
     <!-- Version of gebit-build to be used -->
     <version.build>3.4.1-I377</version.build>
     <version.gebit-build-extension>1.2.2</version.gebit-build-extension>
