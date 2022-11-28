@@ -1,0 +1,4 @@
+startCommitMessage = gitlab-scm-source: updating versions for feature branch
+branchType = feature
+issueNumber = gitlab-scm-source
+baseBranch = master
