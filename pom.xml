@@ -62,7 +62,9 @@
     </developer>
   </developers>
 
-  <distributionManagement>
+  <!-- gebit: we cannot override the distributionManagement from our build tile
+  	   see: https://jira.gebit.de/browse/GBLD-1099 -->
+  <!-- <distributionManagement>
     <repository>
       <id>maven.jenkins-ci.org</id>
       <name>jenkinsci-releases</name>
@@ -73,7 +75,7 @@
       <name>jenkinsci-snapshots</name>
       <url>https://repo.jenkins-ci.org/snapshots</url>
     </snapshotRepository>
-  </distributionManagement>
+  </distributionManagement> -->
 
   <scm>
     <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
