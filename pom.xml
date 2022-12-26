@@ -33,7 +33,7 @@
     <!-- Version of gebit-build to be used -->
     <version.build>3.4.1-I377</version.build>
     <version.gebit-build-extension>1.2.2</version.gebit-build-extension>
-    <version.tiles>2.8-gebit37</version.tiles>
+    <version.tiles>2.33</version.tiles>
     <version.gitflow-maven-plugin>2.4.6-I152</version.gitflow-maven-plugin>
     
     <tiles.applyBefore>org.jenkins-ci.plugins:gitlab-plugin</tiles.applyBefore>
