@@ -1,0 +1,5 @@
+startCommitMessage = DINF-161: updating versions for feature branch
+baseVersion = ${revision}${changelist}
+branchType = feature
+issueNumber = DINF-161
+baseBranch = gebit
