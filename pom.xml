@@ -26,7 +26,7 @@
     <!-- GEBIT: versions to be used for gebit-build support -->
     <version.tiles>2.8-gebit37</version.tiles>
     <version.gebit-build-extension>1.2.2</version.gebit-build-extension>
-    <version.gebit-forked>1.0.0</version.gebit-forked>
+    <version.gebit-forked>1.0.2</version.gebit-forked>
     <!-- GEBIT: end -->
   </properties>
 
