@@ -8,7 +8,7 @@
 		<mirror>
 			<id>Nexus</id>
 			<name>Nexus Public Mirror</name>
-			<url>http://gebit-nexus.local.gebit.de/content/groups/public</url>
+			<url>https://gebit-nexus.local.gebit.de/content/groups/public</url>
 			<mirrorOf>central</mirrorOf>
 		</mirror>
 	</mirrors>
