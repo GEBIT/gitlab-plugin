@@ -1,3 +1,8 @@
+# GEBIT start
+eclipse-target/
+.factorypath
+# GEBIT end
+
 .idea/
 *.iml
 target/
