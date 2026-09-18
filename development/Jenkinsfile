@@ -1,0 +1,8 @@
+library changelog: false, identifier: "gebit-jenkins@${GEBIT_BUILD_BRANCH}"
+
+pipelineStepHook.before('buildProject') {
+    env.LC_ALL = 'C'
+    return null
+}
+
+buildPipeline(this)
