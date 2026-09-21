@@ -141,7 +141,7 @@ public class GitLabConnection extends AbstractDescribableImpl<GitLabConnection> 
     public GitLabClient getClient(Item item, String jobCredentialId) {
         final String clientId = buildClientCacheKey(item, jobCredentialId);
         GitlabCredentialResolver credentialResolver = new GitlabCredentialResolver();
-        if ((jobCredentialId == null) || jobCredentialId.equals(apiTokenId)) {
+        if ((jobCredentialId == null) || jobCredentialId.isEmpty() || jobCredentialId.equals(apiTokenId)) {
             credentialResolver.setCredentialsId(apiTokenId);
         } else {
             credentialResolver.setCredentialsId(jobCredentialId);
@@ -158,7 +158,7 @@ public class GitLabConnection extends AbstractDescribableImpl<GitLabConnection> 
     }
 
     private String buildClientCacheKey(Item item, String jobCredentialId) {
-        if ((jobCredentialId == null) || jobCredentialId.equals(apiTokenId)) {
+        if ((jobCredentialId == null) || jobCredentialId.isEmpty() || jobCredentialId.equals(apiTokenId)) {
             return "global";
         }
         return "alternative-" + GitlabCredentialResolver.getLookupContextName(item) + "-" + jobCredentialId;

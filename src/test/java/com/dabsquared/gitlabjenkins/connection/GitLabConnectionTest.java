@@ -123,6 +123,13 @@ class GitLabConnectionTest {
     }
 
     @Test
+    void getClient_emptyCredentialId_sameClient() {
+        final GitLabClient client = connection.getClient(null, null);
+        assertThat(client, notNullValue());
+        assertThat(connection.getClient(null, ""), sameInstance(client));
+    }
+
+    @Test
     void getClient_differentCredentialId_differentClient() {
         final GitLabClient client1 = connection.getClient(null, API_TOKEN_ID);
         assertThat(client1, notNullValue());
