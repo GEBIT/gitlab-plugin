@@ -30,6 +30,32 @@ public final class MergeRequestHookTriggerHandlerFactory {
             boolean triggerOnApprovedMergeRequest,
             boolean cancelPendingBuildsOnUpdate,
             boolean cancelRunningBuildsOnUpdate) {
+        return newMergeRequestHookTriggerHandler(
+                triggerOnMergeRequest,
+                triggerOnlyWithNewCommitsPushed,
+                false,
+                triggerOnAcceptedMergeRequest,
+                triggerOnClosedMergeRequest,
+                triggerOpenMergeRequest,
+                skipWorkInProgressMergeRequest,
+                labelsThatForcesBuildIfAdded,
+                triggerOnApprovedMergeRequest,
+                cancelPendingBuildsOnUpdate,
+                cancelRunningBuildsOnUpdate);
+    }
+
+    public static MergeRequestHookTriggerHandler newMergeRequestHookTriggerHandler(
+            boolean triggerOnMergeRequest,
+            boolean triggerOnlyWithNewCommitsPushed,
+            boolean rebuildSameCommitAllowed,
+            boolean triggerOnAcceptedMergeRequest,
+            boolean triggerOnClosedMergeRequest,
+            TriggerOpenMergeRequest triggerOpenMergeRequest,
+            boolean skipWorkInProgressMergeRequest,
+            String labelsThatForcesBuildIfAdded,
+            boolean triggerOnApprovedMergeRequest,
+            boolean cancelPendingBuildsOnUpdate,
+            boolean cancelRunningBuildsOnUpdate) {
 
         TriggerConfigChain chain = new TriggerConfigChain();
         chain.rejectUnless(
@@ -53,6 +79,7 @@ public final class MergeRequestHookTriggerHandlerFactory {
         return new MergeRequestHookTriggerHandlerImpl(
                 chain,
                 triggerOnlyWithNewCommitsPushed,
+                rebuildSameCommitAllowed,
                 skipWorkInProgressMergeRequest,
                 labelsThatForcesBuildIfAddedSet,
                 cancelPendingBuildsOnUpdate,
@@ -63,6 +90,7 @@ public final class MergeRequestHookTriggerHandlerFactory {
         return newMergeRequestHookTriggerHandler(
                 config.getTriggerOnMergeRequest(),
                 config.isTriggerOnlyIfNewCommitsPushed(),
+                config.isRebuildSameCommitAllowed(),
                 config.isTriggerOnAcceptedMergeRequest(),
                 config.isTriggerOnClosedMergeRequest(),
                 config.getTriggerOpenMergeRequestOnPush(),
@@ -80,6 +108,7 @@ public final class MergeRequestHookTriggerHandlerFactory {
     public static class Config implements MergeRequestTriggerConfig {
         private boolean triggerOnMergeRequest = true;
         private boolean triggerOnlyIfNewCommitsPushed = false;
+        private boolean rebuildSameCommitAllowed = false;
         private boolean triggerOnAcceptedMergeRequest = false;
         private boolean triggerOnClosedMergeRequest = false;
         private TriggerOpenMergeRequest triggerOpenMergeRequest = TriggerOpenMergeRequest.never;
@@ -97,6 +126,11 @@ public final class MergeRequestHookTriggerHandlerFactory {
         @Override
         public boolean isTriggerOnlyIfNewCommitsPushed() {
             return triggerOnlyIfNewCommitsPushed;
+        }
+
+        @Override
+        public boolean isRebuildSameCommitAllowed() {
+            return rebuildSameCommitAllowed;
         }
 
         @Override
@@ -146,6 +180,11 @@ public final class MergeRequestHookTriggerHandlerFactory {
 
         public Config setTriggerOnlyIfNewCommitsPushed(boolean triggerOnlyIfNewCommitsPushed) {
             this.triggerOnlyIfNewCommitsPushed = triggerOnlyIfNewCommitsPushed;
+            return this;
+        }
+
+        public Config setRebuildSameCommitAllowed(boolean rebuildSameCommitAllowed) {
+            this.rebuildSameCommitAllowed = rebuildSameCommitAllowed;
             return this;
         }
 

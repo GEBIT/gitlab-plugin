@@ -7,6 +7,10 @@ public interface MergeRequestTriggerConfig {
 
     boolean isTriggerOnlyIfNewCommitsPushed();
 
+    default boolean isRebuildSameCommitAllowed() {
+        return false;
+    }
+
     boolean isTriggerOnAcceptedMergeRequest();
 
     boolean isTriggerOnApprovedMergeRequest();
