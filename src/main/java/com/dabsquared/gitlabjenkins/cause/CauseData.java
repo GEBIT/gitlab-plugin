@@ -848,7 +848,8 @@ public final class CauseData {
                     return Messages.GitLabWebHookCause_ShortDescription_MergeRequestHook_plain(
                             String.valueOf(data.getMergeRequestIid()),
                             forkNamespace + data.getSourceBranch(),
-                            data.getTargetBranch());
+                            data.getTargetBranch(),
+                            data.getTargetProjectUrl());
                 } else {
                     return Messages.GitLabWebHookCause_ShortDescription_MergeRequestHook_html(
                             String.valueOf(data.getMergeRequestIid()),
@@ -869,7 +870,8 @@ public final class CauseData {
                             triggeredBy,
                             String.valueOf(data.getMergeRequestIid()),
                             forkNamespace + data.getSourceBranch(),
-                            data.getTargetBranch());
+                            data.getTargetBranch(),
+                            data.getTargetProjectUrl());
                 } else {
                     return Messages.GitLabWebHookCause_ShortDescription_NoteHook_html(
                             triggeredBy,
