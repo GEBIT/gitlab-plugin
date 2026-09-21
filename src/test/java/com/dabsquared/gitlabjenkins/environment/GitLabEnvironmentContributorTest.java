@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.dabsquared.gitlabjenkins.cause.CauseData;
 import com.dabsquared.gitlabjenkins.cause.CauseDataBuilder;
 import com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause;
+import com.dabsquared.gitlabjenkins.gitlab.hook.model.Action;
 import hudson.EnvVars;
 import hudson.matrix.AxisList;
 import hudson.matrix.MatrixBuild;
@@ -102,6 +103,25 @@ class GitLabEnvironmentContributorTest {
     void freeStyleProjectTestEmptyLabels() throws Exception {
         // empty list passed as labels
         testFreeStyleProjectLabels(generateCauseDataWithLabels(Collections.emptyList()), null);
+    }
+
+    @Test
+    void mergeRequestVariablesTest() {
+        CauseData causeData = generateCauseDataBase()
+                .withSourceRepoFullName("group/source")
+                .withTargetRepoFullName("group/target")
+                .withMergeRequestAction(Action.update)
+                .withMergeRequestOldRev("old-revision")
+                .withMergeRequestWIP(true)
+                .withMergeRequestBecameNonWIP(true)
+                .build();
+
+        assertEquals("group/source", causeData.getBuildVariables().get("gitlabSourceRepoFullName"));
+        assertEquals("group/target", causeData.getBuildVariables().get("gitlabTargetRepoFullName"));
+        assertEquals("update", causeData.getBuildVariables().get("gitlabMergeRequestAction"));
+        assertEquals("old-revision", causeData.getBuildVariables().get("gitlabMergeRequestOldRev"));
+        assertEquals("true", causeData.getBuildVariables().get("gitlabMergeRequestWIP"));
+        assertEquals("true", causeData.getBuildVariables().get("gitlabMergeRequestBecameNonWIP"));
     }
 
     @Test
