@@ -842,9 +842,7 @@ public final class CauseData {
         MERGE {
             @Override
             String getShortDescription(CauseData data) {
-                String forkNamespace = StringUtils.equals(data.getSourceNamespace(), data.getTargetBranch())
-                        ? ""
-                        : data.getSourceNamespace() + "/";
+                String forkNamespace = getForkNamespace(data);
                 if (Jenkins.getActiveInstance().getMarkupFormatter() instanceof EscapedMarkupFormatter
                         || data.getTargetProjectUrl() == null) {
                     return Messages.GitLabWebHookCause_ShortDescription_MergeRequestHook_plain(
@@ -864,9 +862,7 @@ public final class CauseData {
             @Override
             String getShortDescription(CauseData data) {
                 String triggeredBy = data.getTriggeredByUser();
-                String forkNamespace = StringUtils.equals(data.getSourceNamespace(), data.getTargetBranch())
-                        ? ""
-                        : data.getSourceNamespace() + "/";
+                String forkNamespace = getForkNamespace(data);
                 if (Jenkins.getActiveInstance().getMarkupFormatter() instanceof EscapedMarkupFormatter
                         || data.getTargetProjectUrl() == null) {
                     return Messages.GitLabWebHookCause_ShortDescription_NoteHook_plain(
@@ -906,6 +902,16 @@ public final class CauseData {
         }
 
         abstract String getShortDescription(CauseData data);
+
+        private static String getForkNamespace(CauseData data) {
+            if (!StringUtils.equals(data.getSourceNamespace(), data.getTargetNamespace())) {
+                return data.getSourceNamespace() + "/" + data.getSourceRepoName() + "/";
+            }
+            if (!StringUtils.equals(data.getSourceRepoName(), data.getTargetRepoName())) {
+                return data.getSourceRepoName() + "/";
+            }
+            return "";
+        }
     }
 
     private static class MapWrapper<K, V> extends AbstractMap<K, V> {
