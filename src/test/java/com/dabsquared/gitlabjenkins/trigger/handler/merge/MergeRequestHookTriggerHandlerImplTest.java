@@ -165,6 +165,14 @@ class MergeRequestHookTriggerHandlerImplTest {
     }
 
     @Test
+    void mergeRequest_wip_title_detection() {
+        assertThat(MergeRequestHookTriggerHandlerImpl.isWipTitle("WIP: title"), is(true));
+        assertThat(MergeRequestHookTriggerHandlerImpl.isWipTitle("[Draft] title"), is(true));
+        assertThat(MergeRequestHookTriggerHandlerImpl.isWipTitle("draft - title"), is(true));
+        assertThat(MergeRequestHookTriggerHandlerImpl.isWipTitle("title"), is(false));
+    }
+
+    @Test
     void mergeRequest_build_when_close() throws Exception {
         MergeRequestHookTriggerHandler mergeRequestHookTriggerHandler =
                 withConfig().setTriggerOnClosedMergeRequest(true).build();
