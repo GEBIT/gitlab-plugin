@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>gitlab-plugin</artifactId>
-  <version>${revision}.${changelist}</version>
+  <version>1.2152.veec0897048b_0-gebit1</version>
   <packaging>hpi</packaging>
   <name>GitLab Plugin</name>
   <url>https://github.com/jenkinsci/${project.artifactId}</url>
