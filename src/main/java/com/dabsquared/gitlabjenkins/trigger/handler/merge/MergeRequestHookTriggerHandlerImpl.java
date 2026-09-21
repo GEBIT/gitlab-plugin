@@ -39,6 +39,8 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
         implements MergeRequestHookTriggerHandler {
 
     private static final Logger LOGGER = Logger.getLogger(MergeRequestHookTriggerHandlerImpl.class.getName());
+    private static final Pattern WIP_PATTERN = Pattern.compile(
+            "(?i)^\\s*(?:\\[wip\\]|wip:|wip\\s+|wip$|\\[draft\\]|\\(draft\\)|draft:|draft\\s+-\\s+|draft\\s+|draft$)");
 
     private final boolean onlyIfNewCommitsPushed;
     private final boolean rebuildSameCommitAllowed;
@@ -410,18 +412,11 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
                 .orElse(new MergeRequestChangedTitle());
         String current = changedTitle.getCurrent() != null ? changedTitle.getCurrent() : "";
         String previous = changedTitle.getPrevious() != null ? changedTitle.getPrevious() : "";
-        boolean wasDraft = hasDraftIndicator(previous) && !hasDraftIndicator(current);
-
-        // The support of "WIP" is to be removed in GitLab 14.0
-        // See here:
-        // https://docs.gitlab.com/13.12/ee/user/project/merge_requests/drafts.html#mark-merge-requests-as-drafts
-        boolean wasWip = previous.contains("WIP") && !current.contains("WIP");
-
-        return wasDraft || wasWip;
+        return isWipTitle(previous) && !isWipTitle(current);
     }
 
     /**
-     * Checks if given text has the appropriate 'Draft' syntax
+     * Checks if given text has the appropriate 'Draft' or 'WIP' syntax.
      *
      * This is intended to be used on a MR Title.
      *
@@ -430,9 +425,8 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
      * @param title The title to check
      * @return true if the title starts with the appropriate 'Draft' syntax, else false.
      */
-    private static boolean hasDraftIndicator(String title) {
-        Pattern draftPattern = Pattern.compile("\\s*(Draft:|\\[Draft\\]|\\(Draft\\)).*");
-        return draftPattern.matcher(title).matches();
+    protected static boolean isWipTitle(String title) {
+        return WIP_PATTERN.matcher(title).find();
     }
 
     private boolean isForcedByAddedLabel(MergeRequestHook hook) {
