@@ -180,6 +180,11 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
 
             if (mergeRequestLabelFilter.isMergeRequestAllowed(labelsNames)) {
                 super.handle(job, hook, ciSkip, branchFilter, mergeRequestLabelFilter);
+            } else {
+                LOGGER.log(
+                        Level.INFO,
+                        "Ignore MR #{0} event because of merge request label filter. Labels: {1}",
+                        toArray(hook.getObjectAttributes().getIid(), labelsNames));
             }
         }
     }
@@ -187,7 +192,14 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     protected boolean isNewCommitPushed(MergeRequestHook hook) {
         if (this.onlyIfNewCommitsPushed) {
             if (hook.getObjectAttributes().getAction().equals(Action.update)) {
-                return hook.getObjectAttributes().getOldrev() != null;
+                boolean apply = hook.getObjectAttributes().getOldrev() != null;
+                if (apply) {
+                    LOGGER.log(
+                            Level.INFO,
+                            "Accept MR #{0} update event because it is triggered by a commit push",
+                            hook.getObjectAttributes().getIid());
+                }
+                return apply;
             }
         }
         return true;
@@ -205,10 +217,19 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
 
         if (isAllowedByConfig(objectAttributes) && isNotSkipWorkInProgressMergeRequest(objectAttributes)) {
             if (forcedByAddedLabel) {
+                LOGGER.log(Level.INFO, "Accept MR #{0} event forced by added label", objectAttributes.getIid());
                 return true;
             } else {
                 if (rebuildSameCommitAllowed || isLastCommitNotYetBuild(job, hook)) {
-                    return isNewCommitPushed(hook) || isChangedToNotDraft(hook);
+                    boolean apply = isNewCommitPushed(hook) || isChangedToNotDraft(hook);
+                    if (!apply) {
+                        LOGGER.log(
+                                Level.INFO,
+                                "Ignore MR #{0} update event because neither event is triggered by a commit push "
+                                        + "nor MR became non WIP state",
+                                objectAttributes.getIid());
+                    }
+                    return apply;
                 }
             }
         }
@@ -397,7 +418,12 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     }
 
     private boolean isAllowedByConfig(MergeRequestObjectAttributes objectAttributes) {
-        return triggerConfig.test(objectAttributes);
+        boolean applied = triggerConfig.test(objectAttributes);
+        if (!applied) {
+            LOGGER.log(
+                    Level.INFO, "Ignore MR #{0} event because it is not allowed by config", objectAttributes.getIid());
+        }
+        return applied;
     }
 
     /**
@@ -416,7 +442,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     }
 
     /**
-     * Checks if given text has the appropriate 'Draft' or 'WIP' syntax.
+     * Checks if given text has the appropriate 'Draft' syntax
      *
      * This is intended to be used on a MR Title.
      *
