@@ -185,6 +185,10 @@ class PipelineHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<Pipel
                                         ? ""
                                         : hook.getRepository().getName())
                                 : hook.getProject().getName())
+                .withSourceRepoFullName(
+                        hook.getProject() == null || hook.getProject().getPathWithNamespace() == null
+                                ? ""
+                                : hook.getProject().getPathWithNamespace())
                 .withSourceNamespace(
                         hook.getProject() == null || hook.getProject().getNamespace() == null
                                 ? ""
@@ -214,6 +218,7 @@ class PipelineHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<Pipel
                 .withTargetProjectId(hook.getProject().getId())
                 .withTargetBranch(getTargetBranch(hook) == null ? "" : getTargetBranch(hook))
                 .withTargetRepoName("")
+                .withTargetRepoFullName("")
                 .withTargetNamespace("")
                 .withTargetRepoSshUrl("")
                 .withTargetRepoHttpUrl("")

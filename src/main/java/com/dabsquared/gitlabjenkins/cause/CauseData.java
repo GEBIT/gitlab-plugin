@@ -27,6 +27,7 @@ public final class CauseData {
     private final String userEmail;
     private final String sourceRepoHomepage;
     private final String sourceRepoName;
+    private final String sourceRepoFullName;
     private final String sourceNamespace;
     private final String sourceRepoUrl;
     private final String sourceRepoSshUrl;
@@ -43,6 +44,7 @@ public final class CauseData {
     private final List<String> mergeRequestLabels;
     private final String targetBranch;
     private final String targetRepoName;
+    private final String targetRepoFullName;
     private final String targetNamespace;
     private final String targetRepoSshUrl;
     private final String targetRepoHttpUrl;
@@ -86,6 +88,7 @@ public final class CauseData {
             String userEmail,
             String sourceRepoHomepage,
             String sourceRepoName,
+            String sourceRepoFullName,
             String sourceNamespace,
             String sourceRepoUrl,
             String sourceRepoSshUrl,
@@ -99,6 +102,7 @@ public final class CauseData {
             List<String> mergeRequestLabels,
             String targetBranch,
             String targetRepoName,
+            String targetRepoFullName,
             String targetNamespace,
             String targetRepoSshUrl,
             String targetRepoHttpUrl,
@@ -142,6 +146,8 @@ public final class CauseData {
         this.userEmail = userEmail == null ? "" : userEmail;
         this.sourceRepoHomepage = sourceRepoHomepage == null ? "" : sourceRepoHomepage;
         this.sourceRepoName = Objects.requireNonNull(sourceRepoName, "sourceRepoName must not be null.");
+        this.sourceRepoFullName =
+                sourceRepoFullName == null ? fullName(sourceNamespace, sourceRepoName) : sourceRepoFullName;
         this.sourceNamespace = Objects.requireNonNull(sourceNamespace, "sourceNamespace must not be null.");
         this.sourceRepoUrl = sourceRepoUrl == null ? sourceRepoSshUrl : sourceRepoUrl;
         this.sourceRepoSshUrl = Objects.requireNonNull(sourceRepoSshUrl, "sourceRepoSshUrl must not be null.");
@@ -158,6 +164,8 @@ public final class CauseData {
         this.mergeRequestLabels = mergeRequestLabels == null ? Collections.emptyList() : mergeRequestLabels;
         this.targetBranch = Objects.requireNonNull(targetBranch, "targetBranch must not be null.");
         this.targetRepoName = Objects.requireNonNull(targetRepoName, "targetRepoName must not be null.");
+        this.targetRepoFullName =
+                targetRepoFullName == null ? fullName(targetNamespace, targetRepoName) : targetRepoFullName;
         this.targetNamespace = Objects.requireNonNull(targetNamespace, "targetNamespace must not be null.");
         this.targetRepoSshUrl = Objects.requireNonNull(targetRepoSshUrl, "targetRepoSshUrl must not be null.");
         this.targetRepoHttpUrl = Objects.requireNonNull(targetRepoHttpUrl, "targetRepoHttpUrl must not be null.");
@@ -201,6 +209,7 @@ public final class CauseData {
         variables.put("gitlabUserEmail", userEmail);
         variables.put("gitlabSourceRepoHomepage", sourceRepoHomepage);
         variables.put("gitlabSourceRepoName", sourceRepoName);
+        variables.put("gitlabSourceRepoFullName", sourceRepoFullName);
         variables.put("gitlabSourceNamespace", sourceNamespace);
         variables.put("gitlabSourceRepoURL", sourceRepoUrl);
         variables.put("gitlabSourceRepoSshUrl", sourceRepoSshUrl);
@@ -222,6 +231,7 @@ public final class CauseData {
         variables.putIfNotNull("gitlabMergeRequestAssignee", mergeRequestAssignee);
         variables.put("gitlabTargetBranch", targetBranch);
         variables.put("gitlabTargetRepoName", targetRepoName);
+        variables.put("gitlabTargetRepoFullName", targetRepoFullName);
         variables.put("gitlabTargetNamespace", targetNamespace);
         variables.put("gitlabTargetRepoSshUrl", targetRepoSshUrl);
         variables.put("gitlabTargetRepoHttpUrl", targetRepoHttpUrl);
@@ -303,6 +313,11 @@ public final class CauseData {
     }
 
     @Exported
+    public String getSourceRepoFullName() {
+        return sourceRepoFullName;
+    }
+
+    @Exported
     public String getSourceNamespace() {
         return sourceNamespace;
     }
@@ -365,6 +380,11 @@ public final class CauseData {
     @Exported
     public String getTargetRepoName() {
         return targetRepoName;
+    }
+
+    @Exported
+    public String getTargetRepoFullName() {
+        return targetRepoFullName;
     }
 
     @Exported
@@ -570,6 +590,7 @@ public final class CauseData {
                 .append(userEmail, causeData.userEmail)
                 .append(sourceRepoHomepage, causeData.sourceRepoHomepage)
                 .append(sourceRepoName, causeData.sourceRepoName)
+                .append(sourceRepoFullName, causeData.sourceRepoFullName)
                 .append(sourceNamespace, causeData.sourceNamespace)
                 .append(sourceRepoUrl, causeData.sourceRepoUrl)
                 .append(sourceRepoSshUrl, causeData.sourceRepoSshUrl)
@@ -586,6 +607,7 @@ public final class CauseData {
                 .append(mergeRequestLabels, causeData.mergeRequestLabels)
                 .append(targetBranch, causeData.targetBranch)
                 .append(targetRepoName, causeData.targetRepoName)
+                .append(targetRepoFullName, causeData.targetRepoFullName)
                 .append(targetNamespace, causeData.targetNamespace)
                 .append(targetRepoSshUrl, causeData.targetRepoSshUrl)
                 .append(targetRepoHttpUrl, causeData.targetRepoHttpUrl)
@@ -631,6 +653,7 @@ public final class CauseData {
                 .append(userEmail)
                 .append(sourceRepoHomepage)
                 .append(sourceRepoName)
+                .append(sourceRepoFullName)
                 .append(sourceNamespace)
                 .append(sourceRepoUrl)
                 .append(sourceRepoSshUrl)
@@ -647,6 +670,7 @@ public final class CauseData {
                 .append(mergeRequestLabels)
                 .append(targetBranch)
                 .append(targetRepoName)
+                .append(targetRepoFullName)
                 .append(targetNamespace)
                 .append(targetRepoSshUrl)
                 .append(targetRepoHttpUrl)
@@ -692,6 +716,7 @@ public final class CauseData {
                 .append("userEmail", userEmail)
                 .append("sourceRepoHomepage", sourceRepoHomepage)
                 .append("sourceRepoName", sourceRepoName)
+                .append("sourceRepoFullName", sourceRepoFullName)
                 .append("sourceNamespace", sourceNamespace)
                 .append("sourceRepoUrl", sourceRepoUrl)
                 .append("sourceRepoSshUrl", sourceRepoSshUrl)
@@ -708,6 +733,7 @@ public final class CauseData {
                 .append("mergeRequestLabels", mergeRequestLabels)
                 .append("targetBranch", targetBranch)
                 .append("targetRepoName", targetRepoName)
+                .append("targetRepoFullName", targetRepoFullName)
                 .append("targetNamespace", targetNamespace)
                 .append("targetRepoSshUrl", targetRepoSshUrl)
                 .append("targetRepoHttpUrl", targetRepoHttpUrl)
@@ -738,6 +764,16 @@ public final class CauseData {
                 .append("projectWebUrl", projectWebUrl)
                 .append("projectPathWithNamespace", projectPathWithNamespace)
                 .toString();
+    }
+
+    private static String fullName(String namespace, String name) {
+        if (StringUtils.isBlank(namespace)) {
+            return name;
+        }
+        if (StringUtils.isBlank(name)) {
+            return namespace;
+        }
+        return namespace + "/" + name;
     }
 
     public enum ActionType {

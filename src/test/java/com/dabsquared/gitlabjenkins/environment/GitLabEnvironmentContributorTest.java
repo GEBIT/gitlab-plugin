@@ -158,5 +158,7 @@ class GitLabEnvironmentContributorTest {
         assertEquals("test", env.get("gitlabTargetRepoName"));
         assertEquals("feature", env.get("gitlabSourceBranch"));
         assertEquals("test", env.get("gitlabSourceRepoName"));
+        assertEquals("test-namespace/test", env.get("gitlabSourceRepoFullName"));
+        assertEquals("test-namespace/test", env.get("gitlabTargetRepoFullName"));
     }
 }
