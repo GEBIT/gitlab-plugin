@@ -41,6 +41,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     private static final Logger LOGGER = Logger.getLogger(MergeRequestHookTriggerHandlerImpl.class.getName());
 
     private final boolean onlyIfNewCommitsPushed;
+    private final boolean rebuildSameCommitAllowed;
     private final boolean skipWorkInProgressMergeRequest;
     private final Set<String> labelsThatForcesBuildIfAdded;
     private final Predicate<MergeRequestObjectAttributes> triggerConfig;
@@ -65,6 +66,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
                 allowedStates,
                 EnumSet.noneOf(Action.class),
                 false,
+                false,
                 skipWorkInProgressMergeRequest,
                 cancelPendingBuildsOnUpdate,
                 cancelRunningBuildsOnUpdate);
@@ -83,6 +85,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
                 allowedStates,
                 allowedActions,
                 onlyIfNewCommitsPushed,
+                false,
                 skipWorkInProgressMergeRequest,
                 cancelPendingBuildsOnUpdate,
                 false);
@@ -97,8 +100,28 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
             boolean cancelPendingBuildsOnUpdate,
             boolean cancelRunningBuildsOnUpdate) {
         this(
+                allowedStates,
+                allowedActions,
+                onlyIfNewCommitsPushed,
+                false,
+                skipWorkInProgressMergeRequest,
+                cancelPendingBuildsOnUpdate,
+                cancelRunningBuildsOnUpdate);
+    }
+
+    @Deprecated
+    MergeRequestHookTriggerHandlerImpl(
+            Collection<State> allowedStates,
+            Collection<Action> allowedActions,
+            boolean onlyIfNewCommitsPushed,
+            boolean rebuildSameCommitAllowed,
+            boolean skipWorkInProgressMergeRequest,
+            boolean cancelPendingBuildsOnUpdate,
+            boolean cancelRunningBuildsOnUpdate) {
+        this(
                 new TriggerConfigChain().add(allowedStates, null).add(null, allowedActions),
                 onlyIfNewCommitsPushed,
+                rebuildSameCommitAllowed,
                 skipWorkInProgressMergeRequest,
                 emptySet(),
                 cancelPendingBuildsOnUpdate,
@@ -114,6 +137,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
         this(
                 triggerConfig,
                 onlyIfNewCommitsPushed,
+                false,
                 skipWorkInProgressMergeRequest,
                 labelsThatForcesBuildIfAdded,
                 cancelPendingBuildsOnUpdate,
@@ -123,12 +147,14 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
     MergeRequestHookTriggerHandlerImpl(
             Predicate<MergeRequestObjectAttributes> triggerConfig,
             boolean onlyIfNewCommitsPushed,
+            boolean rebuildSameCommitAllowed,
             boolean skipWorkInProgressMergeRequest,
             Set<String> labelsThatForcesBuildIfAdded,
             boolean cancelPendingBuildsOnUpdate,
             boolean cancelRunningBuildsOnUpdate) {
         this.triggerConfig = triggerConfig;
         this.onlyIfNewCommitsPushed = onlyIfNewCommitsPushed;
+        this.rebuildSameCommitAllowed = rebuildSameCommitAllowed;
         this.skipWorkInProgressMergeRequest = skipWorkInProgressMergeRequest;
         this.labelsThatForcesBuildIfAdded = labelsThatForcesBuildIfAdded;
         this.cancelPendingBuildsOnUpdate = cancelPendingBuildsOnUpdate;
@@ -179,7 +205,7 @@ class MergeRequestHookTriggerHandlerImpl extends AbstractWebHookTriggerHandler<M
             if (forcedByAddedLabel) {
                 return true;
             } else {
-                if (isLastCommitNotYetBuild(job, hook)) {
+                if (rebuildSameCommitAllowed || isLastCommitNotYetBuild(job, hook)) {
                     return isNewCommitPushed(hook) || isChangedToNotDraft(hook);
                 }
             }

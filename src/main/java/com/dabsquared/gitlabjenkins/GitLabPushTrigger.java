@@ -80,6 +80,7 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
     private boolean triggerToBranchDeleteRequest = false;
     private boolean triggerOnMergeRequest = true;
     private boolean triggerOnlyIfNewCommitsPushed = false;
+    private boolean rebuildSameCommitAllowed = false;
     private boolean triggerOnPipelineEvent = false;
     private boolean triggerOnFailedPipelineEvent = false;
     private boolean triggerOnAcceptedMergeRequest = false;
@@ -263,6 +264,11 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
     }
 
     @Override
+    public boolean isRebuildSameCommitAllowed() {
+        return rebuildSameCommitAllowed;
+    }
+
+    @Override
     public boolean isTriggerOnAcceptedMergeRequest() {
         return triggerOnAcceptedMergeRequest;
     }
@@ -377,6 +383,11 @@ public class GitLabPushTrigger extends Trigger<Job<?, ?>> implements MergeReques
     @DataBoundSetter
     public void setTriggerOnlyIfNewCommitsPushed(boolean triggerOnlyIfNewCommitsPushed) {
         this.triggerOnlyIfNewCommitsPushed = triggerOnlyIfNewCommitsPushed;
+    }
+
+    @DataBoundSetter
+    public void setRebuildSameCommitAllowed(boolean rebuildSameCommitAllowed) {
+        this.rebuildSameCommitAllowed = rebuildSameCommitAllowed;
     }
 
     @DataBoundSetter
